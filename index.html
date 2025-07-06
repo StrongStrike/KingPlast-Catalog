@@ -42,377 +42,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/17.1.1/lazyload.min.js"></script>
 
-		<style>
-			@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700&display=swap');
-			html {
-				scroll-behavior: auto !important;
-			}
-			body {
-				font-family: 'Plus Jakarta Sans', sans-serif;
-				background: linear-gradient(to bottom right, #fffaf2, #f8ecd0);
-				color: #111;
-				overflow-x: hidden;
-			}
-			.royal {
-				color: #7a5b12;
-				font-weight: 700;
-				letter-spacing: 0.065em;
-				text-transform: uppercase;
-			}
-			/* --- Современный hover-эффект карточки без блика: мягкая тень, масштаб, цвет, glass-эффект и плавный border glow --- */
-			.catalog-card {
-				background: #fffdf9;
-				border: 2px solid #e0c374 !important;
-				border-radius: 18px;
-				box-shadow: 0 4px 24px rgba(191, 155, 30, 0.1),
-					0 1.5px 6px rgba(191, 155, 30, 0.09);
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				transition: box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-					border-color 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-					transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-					background 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-					filter 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-				cursor: pointer;
-				position: relative;
-				overflow: hidden;
-				backdrop-filter: blur(0px);
-				will-change: transform, box-shadow, border-color, background, filter;
-			}
-
-			.catalog-card::before {
-				display: none !important; /* полностью убираем блик */
-			}
-
-			.catalog-card:hover,
-			.catalog-card:focus-visible {
-				box-shadow: 0 12px 48px 0 #e7ce858c, 0 2px 16px #eed186bb,
-					0 0 0 6px #fffbe6cc;
-				border-color: #f7c544 !important;
-				background: rgba(255, 251, 230, 0.98);
-				transform: translateY(-8px) scale(1.045);
-				filter: brightness(1.04) saturate(1.1);
-				backdrop-filter: blur(2.5px) saturate(1.12);
-				transition: box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-					border-color 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-					transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-					background 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-					filter 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-					backdrop-filter 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-				z-index: 2;
-			}
-
-			.catalog-card:active {
-				transform: scale(0.98);
-				box-shadow: 0 4px 16px 0 #e7ce858c, 0 1px 4px #eed186bb;
-			}
-
-			.catalog-card .catalog-image {
-				transition: filter 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-					transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-				will-change: filter, transform;
-				width: 100%;
-				height: 508px;
-				object-fit: cover;
-			}
-
-			.catalog-card:hover .catalog-image,
-			.catalog-card:focus-visible .catalog-image {
-				filter: brightness(1.1) saturate(1.15) contrast(1.04)
-					drop-shadow(0 4px 24px #f7e7b6cc);
-				transform: scale(1.045);
-			}
-
-			.catalog-card h3,
-			.catalog-card p {
-				transition: color 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-					text-shadow 0.22s;
-			}
-
-			.catalog-card:hover h3,
-			.catalog-card:focus-visible h3 {
-				color: #b08b23;
-				text-shadow: 0 2px 12px #f7e7b6cc;
-			}
-
-			.catalog-card:hover p,
-			.catalog-card:focus-visible p {
-				color: #a68b3c;
-				text-shadow: 0 1px 8px #f7e7b688;
-			}
-			.catalog-card {
-				background: #fffdf9;
-				border: 2px solid #e0c374 !important;
-				border-radius: 18px;
-				box-shadow: 0 20px 40px rgba(191, 155, 30, 0.23);
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				transition: all 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
-				cursor: pointer;
-				position: relative;
-			}
-			.catalog-card:hover {
-				box-shadow: 0 12px 42px #f3de7ecc, 0 2px 8px #eed186bb;
-				border-color: #f7c544 !important;
-			}
-			.nav-item::after {
-				content: attr(data-label);
-				position: absolute;
-				left: 100%;
-				margin-left: 0.5rem;
-				top: 50%;
-				transform: translateY(-50%);
-				background: rgba(255, 255, 255, 0.93);
-				color: #8b6b1a;
-				padding: 0.3rem 0.6rem;
-				font-size: 0.875rem;
-				font-weight: 700;
-				border-radius: 0.25rem;
-				opacity: 0;
-				pointer-events: none;
-				transition: opacity 0.2s;
-			}
-			.nav-item:hover::after {
-				opacity: 1;
-			}
-			.nav-item.active span {
-				box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
-				background-color: #facc15;
-				transform: scale(1.1);
-			}
-			.mobile-bottom-nav {
-				background: #f8ecd0 !important;
-				backdrop-filter: blur(6px);
-				border-radius: 18px 18px 0 0;
-				box-shadow: 0 -2px 24px #dab95933, 0 1px 8px #eed18633;
-			}
-			@media (max-width: 1023px) {
-				body {
-					padding-bottom: 68px !important;
-				}
-				.mobile-nav-fake,
-				.nav-over-header {
-					display: none !important;
-				}
-			}
-			@media (max-width: 767px) {
-				header.parallax-bg {
-					height: 100vh !important;
-					min-height: 100vh !important;
-					padding-top: 2.5rem !important;
-					padding-bottom: 1.2rem !important;
-				}
-				.parallax-bg img {
-					width: 6.5rem !important;
-					margin-bottom: 1.5rem !important;
-				}
-				.parallax-bg h1 {
-					font-size: 2rem !important;
-				}
-				.parallax-bg p {
-					font-size: 1rem !important;
-				}
-				section[id^='cat'] h2 {
-					font-size: 1.25rem !important;
-					margin-bottom: 1.2rem !important;
-					text-align: center !important;
-				}
-				.catalog-card {
-					min-width: 0 !important;
-					max-width: 100% !important;
-					padding: 0 !important;
-					border-radius: 14px !important;
-					box-shadow: 0 4px 16px rgba(191, 155, 30, 0.09) !important;
-					/* увеличиваем высоту карточки */
-					min-height: 72vw !important;
-					height: auto !important;
-					display: flex !important;
-					flex-direction: column !important;
-					align-items: center !important;
-				}
-				.catalog-image {
-					width: 100% !important;
-					max-width: 92vw !important;
-					/* увеличиваем высоту картинки */
-					height: 100vw !important;
-					max-height: 100vw !important;
-					aspect-ratio: 1 / 1 !important;
-					object-fit: cover !important;
-					margin-left: auto !important;
-					margin-right: auto !important;
-					display: block !important;
-				}
-				.catalog-card .p-6,
-				.catalog-card .p-4 {
-					padding: 0.75rem !important;
-				}
-				.catalog-card h3 {
-					font-size: 1.05rem !important;
-				}
-				.catalog-card p {
-					font-size: 0.9rem !important;
-				}
-				footer {
-					font-size: 0.98rem !important;
-					margin-top: 3rem !important;
-					margin-bottom: 2rem !important;
-				}
-				nav.lg\:hidden {
-					width: 100% !important;
-					padding-left: 0.2rem !important;
-					padding-right: 0.2rem !important;
-				}
-				.mobile-bottom-nav {
-					background: #f8ecd0 !important;
-					backdrop-filter: blur(6px);
-					border-radius: 18px 18px 0 0;
-					box-shadow: 0 -2px 24px #dab95933, 0 1px 8px #eed18633;
-				}
-				.nav-item-mobile span {
-					width: 44px !important;
-					height: 44px !important;
-					border-radius: 16px !important;
-					background: #fffbe6 !important;
-					font-size: 1.25rem !important;
-					box-shadow: 0 2px 8px #e7ce8580;
-					border: 1.5px solid #e7ce85;
-					transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-				}
-				.nav-item-mobile.active span,
-				.nav-item-mobile:active span {
-					background: #facc15 !important;
-					color: #7a5b12 !important;
-					box-shadow: 0 0 12px #f7c54499;
-				}
-				.nav-item-mobile {
-					padding-top: 0.2rem !important;
-					padding-bottom: 0.2rem !important;
-				}
-			}
-			.swiper-button-next,
-			.swiper-button-prev {
-				color: #b08b23;
-				background: #fffbe6e0;
-				border-radius: 9999px;
-				width: 44px;
-				height: 44px;
-				box-shadow: 0 2px 12px #e2d09288;
-				top: 48%;
-				transition: background 0.2s, color 0.2s;
-			}
-			.swiper-button-next:hover,
-			.swiper-button-prev:hover {
-				background: #f6e58d;
-				color: #e1c673;
-			}
-			.swiper-button-prev:after,
-			.swiper-button-next:after {
-				font-size: 25px;
-			}
-			.swiper-pagination-bullet {
-				background: #b08b23;
-				opacity: 0.36;
-				transition: 0.3s;
-				width: 12px;
-				height: 12px;
-			}
-			.swiper-pagination-bullet-active {
-				background: #e1c673;
-				opacity: 1;
-				width: 18px;
-				height: 18px;
-				box-shadow: 0 0 8px #e7ce8585;
-			}
-
-			.swiper-wrapper {
-				margin: 60px 40px;
-			}
-			/* Кнопка наверх */
-			.to-top-btn {
-				position: fixed;
-				right: 1.2rem;
-				bottom: 5.5rem;
-				z-index: 60;
-				background: #fffbe6f7;
-				color: #7a5b12;
-				border-radius: 9999px;
-				padding: 0.9rem;
-				box-shadow: 0 4px 18px #d1b94a36;
-				border: 1.5px solid #e7ce85;
-				display: none;
-				align-items: center;
-				cursor: pointer;
-				transition: background 0.18s, box-shadow 0.18s;
-			}
-			.to-top-btn.visible {
-				display: flex;
-			}
-			.to-top-btn:hover {
-				background: #f6e58d;
-				box-shadow: 0 8px 30px #e7ce858c;
-			}
-			.improved-card {
-				transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-					box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-				box-shadow: 0 6px 32px 0 rgba(191, 155, 30, 0.13),
-					0 1.5px 6px 0 rgba(191, 155, 30, 0.09);
-				will-change: transform, box-shadow;
-			}
-			.improved-card:hover,
-			.improved-card:focus {
-				transform: translateY(-10px) scale(1.045); /* убран rotate */
-				box-shadow: 0 16px 48px 0 #e7ce858c, 0 2px 8px #eed186bb;
-				border-color: #f7c544 !important;
-				z-index: 2;
-			}
-			.improved-card:active {
-				transform: scale(0.98);
-			}
-			.improved-card .catalog-image {
-				transition: filter 0.3s, transform 0.3s;
-			}
-			.improved-card:hover .catalog-image {
-				filter: brightness(1.07) saturate(1.1);
-				transform: scale(1.04); /* убран rotate */
-			}
-			header.parallax-bg {
-				height: 100vh !important;
-				min-height: 100vh !important;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				position: relative;
-				overflow: hidden;
-			}
-			@media (max-width: 767px) {
-				#parallax-bg-img {
-					background-size: cover !important;
-					background-position: center !important;
-					width: 100vw !important;
-					height: 100vh !important;
-					min-width: 100vw !important;
-					min-height: 100vh !important;
-					left: 0 !important;
-					top: 0 !important;
-				}
-			}
-			/* Удаляем margin у swiper-wrapper */
-			.swiper-wrapper {
-				margin: 0 !important;
-			}
-
-			/* Центровка и отступы у контейнера слайдера */
-			.swiper-container-wrapper {
-				max-width: 100%;
-				padding-left: 1rem;
-				padding-right: 1rem;
-			}
-			#sidebar_nav {
-				margin-top: -15%;
-			}
-		</style>
+		<style>@import url(https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700&display=swap);html{scroll-behavior:auto!important}body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(to bottom right,#fffaf2,#f8ecd0);color:#111;overflow-x:hidden}.royal{color:#7a5b12;font-weight:700;letter-spacing:.065em;text-transform:uppercase}.catalog-card{background:#fffdf9;border:2px solid #e0c374!important;border-radius:18px;box-shadow:0 4px 24px rgb(191 155 30 / .1),0 1.5px 6px rgb(191 155 30 / .09);display:flex;flex-direction:column;align-items:center;transition:box-shadow 0.35s cubic-bezier(.22,1,.36,1),border-color 0.25s cubic-bezier(.22,1,.36,1),transform 0.25s cubic-bezier(.22,1,.36,1),background 0.25s cubic-bezier(.22,1,.36,1),filter 0.25s cubic-bezier(.22,1,.36,1);cursor:pointer;position:relative;overflow:hidden;backdrop-filter:blur(0);will-change:transform,box-shadow,border-color,background,filter}.catalog-card::before{display:none!important}.catalog-card:hover,.catalog-card:focus-visible{box-shadow:0 12px 48px 0 #e7ce858c,0 2px 16px #eed186bb,0 0 0 6px #fffbe6cc;border-color:#f7c544!important;background:rgb(255 251 230 / .98);transform:translateY(-8px) scale(1.045);filter:brightness(1.04) saturate(1.1);backdrop-filter:blur(2.5px) saturate(1.12);transition:box-shadow 0.35s cubic-bezier(.22,1,.36,1),border-color 0.25s cubic-bezier(.22,1,.36,1),transform 0.25s cubic-bezier(.22,1,.36,1),background 0.25s cubic-bezier(.22,1,.36,1),filter 0.25s cubic-bezier(.22,1,.36,1),backdrop-filter 0.35s cubic-bezier(.22,1,.36,1);z-index:2}.catalog-card:active{transform:scale(.98);box-shadow:0 4px 16px 0 #e7ce858c,0 1px 4px #eed186bb}.catalog-card .catalog-image{transition:filter 0.32s cubic-bezier(.22,1,.36,1),transform 0.32s cubic-bezier(.22,1,.36,1);will-change:filter,transform;width:100%;height:508px;object-fit:cover}.catalog-card:hover .catalog-image,.catalog-card:focus-visible .catalog-image{filter:brightness(1.1) saturate(1.15) contrast(1.04) drop-shadow(0 4px 24px #f7e7b6cc);transform:scale(1.045)}.catalog-card h3,.catalog-card p{transition:color 0.22s cubic-bezier(.22,1,.36,1),text-shadow 0.22s}.catalog-card:hover h3,.catalog-card:focus-visible h3{color:#b08b23;text-shadow:0 2px 12px #f7e7b6cc}.catalog-card:hover p,.catalog-card:focus-visible p{color:#a68b3c;text-shadow:0 1px 8px #f7e7b688}.catalog-card{background:#fffdf9;border:2px solid #e0c374!important;border-radius:18px;box-shadow:0 20px 40px rgb(191 155 30 / .23);display:flex;flex-direction:column;align-items:center;transition:all 0.5s cubic-bezier(.17,.67,.83,.67);cursor:pointer;position:relative}.catalog-card:hover{box-shadow:0 12px 42px #f3de7ecc,0 2px 8px #eed186bb;border-color:#f7c544!important}.nav-item::after{content:attr(data-label);position:absolute;left:100%;margin-left:.5rem;top:50%;transform:translateY(-50%);background:rgb(255 255 255 / .93);color:#8b6b1a;padding:.3rem .6rem;font-size:.875rem;font-weight:700;border-radius:.25rem;opacity:0;pointer-events:none;transition:opacity 0.2s}.nav-item:hover::after{opacity:1}.nav-item.active span{box-shadow:0 0 15px rgb(255 215 0 / .7);background-color:#facc15;transform:scale(1.1)}.mobile-bottom-nav{background:#f8ecd0!important;backdrop-filter:blur(6px);border-radius:18px 18px 0 0;box-shadow:0 -2px 24px #dab95933,0 1px 8px #eed18633}@media (max-width:1023px){body{padding-bottom:68px!important}.mobile-nav-fake,.nav-over-header{display:none!important}}@media (max-width:767px){header.parallax-bg{height:100vh!important;min-height:100vh!important;padding-top:2.5rem!important;padding-bottom:1.2rem!important}.parallax-bg img{width:6.5rem!important;margin-bottom:1.5rem!important}.parallax-bg h1{font-size:2rem!important}.parallax-bg p{font-size:1rem!important}section[id^='cat'] h2{font-size:1.25rem!important;margin-bottom:1.2rem!important;text-align:center!important}.catalog-card{min-width:0!important;max-width:100%!important;padding:0!important;border-radius:14px!important;box-shadow:0 4px 16px rgb(191 155 30 / .09)!important;min-height:72vw!important;height:auto!important;display:flex!important;flex-direction:column!important;align-items:center!important}.catalog-image{width:100%!important;max-width:92vw!important;height:100vw!important;max-height:100vw!important;aspect-ratio:1 / 1!important;object-fit:cover!important;margin-left:auto!important;margin-right:auto!important;display:block!important}.catalog-card .p-6,.catalog-card .p-4{padding:0.75rem!important}.catalog-card h3{font-size:1.05rem!important}.catalog-card p{font-size:0.9rem!important}footer{font-size:0.98rem!important;margin-top:3rem!important;margin-bottom:2rem!important}nav.lg\:hidden{width:100%!important;padding-left:0.2rem!important;padding-right:0.2rem!important}.mobile-bottom-nav{background:#f8ecd0!important;backdrop-filter:blur(6px);border-radius:18px 18px 0 0;box-shadow:0 -2px 24px #dab95933,0 1px 8px #eed18633}.nav-item-mobile span{width:44px!important;height:44px!important;border-radius:16px!important;background:#fffbe6!important;font-size:1.25rem!important;box-shadow:0 2px 8px #e7ce8580;border:1.5px solid #e7ce85;transition:background 0.2s,color 0.2s,box-shadow 0.2s}.nav-item-mobile.active span,.nav-item-mobile:active span{background:#facc15!important;color:#7a5b12!important;box-shadow:0 0 12px #f7c54499}.nav-item-mobile{padding-top:0.2rem!important;padding-bottom:0.2rem!important}}.swiper-button-next,.swiper-button-prev{color:#b08b23;background:#fffbe6e0;border-radius:9999px;width:44px;height:44px;box-shadow:0 2px 12px #e2d09288;top:48%;transition:background 0.2s,color 0.2s}.swiper-button-next:hover,.swiper-button-prev:hover{background:#f6e58d;color:#e1c673}.swiper-button-prev:after,.swiper-button-next:after{font-size:25px}.swiper-pagination-bullet{background:#b08b23;opacity:.36;transition:0.3s;width:12px;height:12px}.swiper-pagination-bullet-active{background:#e1c673;opacity:1;width:18px;height:18px;box-shadow:0 0 8px #e7ce8585}.swiper-wrapper{margin:60px 40px}.to-top-btn{position:fixed;right:1.2rem;bottom:5.5rem;z-index:60;background:#fffbe6f7;color:#7a5b12;border-radius:9999px;padding:.9rem;box-shadow:0 4px 18px #d1b94a36;border:1.5px solid #e7ce85;display:none;align-items:center;cursor:pointer;transition:background 0.18s,box-shadow 0.18s}.to-top-btn.visible{display:flex}.to-top-btn:hover{background:#f6e58d;box-shadow:0 8px 30px #e7ce858c}.improved-card{transition:transform 0.35s cubic-bezier(.22,1,.36,1),box-shadow 0.35s cubic-bezier(.22,1,.36,1);box-shadow:0 6px 32px 0 rgb(191 155 30 / .13),0 1.5px 6px 0 rgb(191 155 30 / .09);will-change:transform,box-shadow}.improved-card:hover,.improved-card:focus{transform:translateY(-10px) scale(1.045);box-shadow:0 16px 48px 0 #e7ce858c,0 2px 8px #eed186bb;border-color:#f7c544!important;z-index:2}.improved-card:active{transform:scale(.98)}.improved-card .catalog-image{transition:filter 0.3s,transform 0.3s}.improved-card:hover .catalog-image{filter:brightness(1.07) saturate(1.1);transform:scale(1.04)}header.parallax-bg{height:100vh!important;min-height:100vh!important;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}@media (max-width:767px){#parallax-bg-img{background-size:cover!important;background-position:center!important;width:100vw!important;height:100vh!important;min-width:100vw!important;min-height:100vh!important;left:0!important;top:0!important}}.swiper-wrapper{margin:0!important}.swiper-container-wrapper{max-width:100%;padding-left:1rem;padding-right:1rem}#sidebar_nav{margin-top:-15%}</style>
 	</head>
 	<body>
 		<!-- Исправленный сайдбар с числами вместо иконок -->
@@ -4392,279 +4022,77 @@
 			<p class="mt-4">© 2025 KINGPLAST · Royal Interior Quality</p>
 		</footer>
 
-		<script>
-			// VanillaTilt только для карточек вне Swiper
-			if (window.VanillaTilt) {
-				document.querySelectorAll('.grid .catalog-card').forEach(card => {
-					VanillaTilt.init(card, {
-						max: 10,
-						speed: 400,
-						glare: true,
-						'max-glare': 0.2,
-					})
-				})
-			}
-
-			// SimpleLightbox только для ссылок на изображения
-			if (window.SimpleLightbox) {
-				new SimpleLightbox('.catalog-card[href]', {
-					captions: true,
-					captionsData: 'title',
-					captionDelay: 120,
-					overlayOpacity: 0.88,
-					showCounter: false,
-				})
-			}
-
-			// Smooth scroll (gsap)
-			document.querySelectorAll('a[href^="#"]').forEach(link => {
-				link.addEventListener('click', function (e) {
-					const href = this.getAttribute('href')
-					if (href.length > 1 && document.querySelector(href)) {
-						e.preventDefault()
-						gsap.to(window, {
-							duration: 1.1,
-							scrollTo: { y: document.querySelector(href), offsetY: -50 }, // <--- вот тут регулируется отступ!
-							ease: 'power2.inOut',
-						})
-					}
-				})
-			})
-
-			// Подсветка nav
-			const items = document.querySelectorAll('.nav-item')
-			const sections = Array.from(items).map(a =>
-				document.querySelector(a.getAttribute('href'))
-			)
-			const io = new IntersectionObserver(
-				entries => {
-					items.forEach(a => a.classList.remove('active'))
-					let maxRatio = 0,
-						activeIdx = 0
-					entries.forEach((e, i) => {
-						if (e.isIntersecting && e.intersectionRatio > maxRatio) {
-							maxRatio = e.intersectionRatio
-							activeIdx = i
-						}
-					})
-					items[activeIdx].classList.add('active')
-				},
-				{ threshold: 0.5 }
-			)
-			sections.forEach(s => s && io.observe(s))
-
+		<script>if(window.VanillaTilt){document.querySelectorAll('.grid .catalog-card').forEach(card=>{VanillaTilt.init(card,{max:10,speed:400,glare:!0,'max-glare':0.2,})})}
+			if(window.SimpleLightbox){new SimpleLightbox('.catalog-card[href]',{captions:!0,captionsData:'title',captionDelay:120,overlayOpacity:0.88,showCounter:!1,})}
+			document.querySelectorAll('a[href^="#"]').forEach(link=>{link.addEventListener('click',function(e){const href=this.getAttribute('href')
+			if(href.length>1&&document.querySelector(href)){e.preventDefault()
+			gsap.to(window,{duration:1.1,scrollTo:{y:document.querySelector(href),offsetY:-50},ease:'power2.inOut',})}})})
+			const items=document.querySelectorAll('.nav-item')
+			const sections=Array.from(items).map(a=>document.querySelector(a.getAttribute('href')))
+			const io=new IntersectionObserver(entries=>{items.forEach(a=>a.classList.remove('active'))
+			let maxRatio=0,activeIdx=0
+			entries.forEach((e,i)=>{if(e.isIntersecting&&e.intersectionRatio>maxRatio){maxRatio=e.intersectionRatio
+			activeIdx=i}})
+			items[activeIdx].classList.add('active')},{threshold:0.5})
+			sections.forEach(s=>s&&io.observe(s))
 			lucide.createIcons()
-
-			// Swiper
-			new Swiper('.mySwiper-catalog', {
-				slidesPerView: 1,
-				spaceBetween: 16,
-				loop: true,
-				speed: 200,
-				grabCursor: true,
-				autoplay: {
-					delay: 3200,
-					disableOnInteraction: false,
-				},
-				navigation: {
-					nextEl: '.swiper-button-next',
-					prevEl: '.swiper-button-prev',
-				},
-				pagination: {
-					el: '.swiper-pagination',
-					clickable: true,
-					dynamicBullets: true,
-				},
-				breakpoints: {
-					480: {
-						slidesPerView: 1.1,
-					},
-					640: {
-						slidesPerView: 1.5,
-						spaceBetween: 20,
-					},
-					768: {
-						slidesPerView: 2,
-						spaceBetween: 24,
-					},
-					1024: {
-						slidesPerView: 3,
-						spaceBetween: 30,
-					},
-				},
-			})
-
-			// Кнопка наверх
-			const toTopBtn = document.getElementById('toTopBtn')
-			window.addEventListener('scroll', () => {
-				if (window.scrollY > 320) {
-					toTopBtn.classList.add('visible')
-				} else {
-					toTopBtn.classList.remove('visible')
-				}
-			})
-			toTopBtn.addEventListener('click', () => {
-				gsap.to(window, {
-					duration: 1,
-					scrollTo: { y: 0 },
-					ease: 'power2.inOut',
-				})
-			})
-
-			// ScrollReveal для карточек (добавим эффект появления)
-			if (window.ScrollReveal) {
-				ScrollReveal().reveal('.grid .improved-card', {
-					distance: '30px',
-					duration: 900,
-					easing: 'cubic-bezier(.22,1,.36,1)',
-					origin: 'bottom',
-					interval: 120,
-					reset: false,
-				})
-			}
-
-			// Подсветка nav для desktop и mobile (исправленная версия)
-			function updateActiveNav() {
-				const navItems = document.querySelectorAll(
-					'.nav-item, .nav-item-mobile'
-				)
-				const sectionIds = [
-					'#cat9',
-					'#cat12',
-					'#catx12',
-					'#cat16',
-					'#cat18',
-					'#cat20',
-					'#cat25mdf',
-				]
-				const sections = sectionIds.map(id => document.querySelector(id))
-				let activeIdx = 0
-				let maxVisible = 0
-
-				sections.forEach((section, idx) => {
-					if (!section) return
-					const rect = section.getBoundingClientRect()
-					const visible = Math.max(
-						0,
-						Math.min(window.innerHeight, rect.bottom) - Math.max(0, rect.top)
-					)
-					if (visible > maxVisible) {
-						maxVisible = visible
-						activeIdx = idx
-					}
-				})
-
-				navItems.forEach((item, idx) => {
-					// Для sidebar и mobile nav порядок одинаковый, поэтому просто сравниваем idx с activeIdx
-					if (idx % sectionIds.length === activeIdx) {
-						item.classList.add('active')
-					} else {
-						item.classList.remove('active')
-					}
-				})
-			}
-
-			// Обновляем active nav при скролле, ресайзе и после клика по пункту меню
-			window.addEventListener('scroll', updateActiveNav)
-			window.addEventListener('resize', updateActiveNav)
-			document.addEventListener('DOMContentLoaded', updateActiveNav)
-
-			// Также обновляем после плавного скролла по якорю
-			document.querySelectorAll('.nav-item, .nav-item-mobile').forEach(link => {
-				link.addEventListener('click', () => {
-					setTimeout(updateActiveNav, 700) // Даем время для плавного скролла
-				})
-			})
-
-			// --- Новый параллакс: scroll на десктопе, 3D tilt на мобильных ---
-			function isMobile() {
-				return window.innerWidth <= 767
-			}
-
-			let rellaxInstance = null
-			let mobileParallaxRAF = null
-
-			function setMobileParallax(enable) {
-				const bg = document.getElementById('parallax-bg-img')
-				if (!bg) return
-				if (enable) {
-					let lastScroll = -1
-					function onScroll() {
-						const scrollY = window.scrollY
-						if (scrollY !== lastScroll) {
-							bg.style.transform = `translateY(${scrollY * 0.18}px)`
-							lastScroll = scrollY
-						}
-						mobileParallaxRAF = requestAnimationFrame(onScroll)
-					}
-					mobileParallaxRAF = requestAnimationFrame(onScroll)
-				} else {
-					bg.style.transform = ''
-					if (mobileParallaxRAF) cancelAnimationFrame(mobileParallaxRAF)
-					mobileParallaxRAF = null
-				}
-			}
-
-			function initParallax() {
-				const bg = document.getElementById('parallax-bg-img')
-				if (!bg) return
-				if (!isMobile() && window.Rellax) {
-					setMobileParallax(false)
-					if (!rellaxInstance)
-						rellaxInstance = new Rellax('.rellax', { center: true })
-				} else {
-					if (rellaxInstance) {
-						rellaxInstance.destroy()
-						rellaxInstance = null
-					}
-					setMobileParallax(true)
-				}
-			}
-			window.addEventListener('resize', initParallax)
-			document.addEventListener('DOMContentLoaded', initParallax)
-			document.addEventListener('DOMContentLoaded', () => {
-				document.querySelectorAll('img[data-src]').forEach(img => {
-					img.setAttribute('src', img.getAttribute('data-src'))
-				})
-			})
-			document.addEventListener('DOMContentLoaded', () => {
-				const lazyImages = document.querySelectorAll('img.lazy-load')
-				if ('IntersectionObserver' in window) {
-					const observer = new IntersectionObserver((entries, obs) => {
-						entries.forEach(entry => {
-							if (entry.isIntersecting) {
-								const img = entry.target
-								img.src = img.dataset.src
-								img.removeAttribute('data-src')
-								img.classList.remove('lazy-load')
-								obs.unobserve(img)
-							}
-						})
-					})
-					lazyImages.forEach(img => observer.observe(img))
-				} else {
-					lazyImages.forEach(img => {
-						img.src = img.dataset.src
-						img.removeAttribute('data-src')
-					})
-				}
-			})
-			// conver images bonus
-
-			function supportsWebp(callback) {
-				const img = new Image()
-				img.onload = () => callback(img.width > 0 && img.height > 0)
-				img.onerror = () => callback(false)
-				img.src =
-					'data:image/webp;base64,UklGRiIAAABXRUJQVlA4TAYAAAAvAAAAAAfQ//73v/+BiOh/AAA='
-			}
-			supportsWebp(isSupported => {
-				document.querySelectorAll('img.lazy-load').forEach(img => {
-					const base = img.dataset.src.replace(/\.(jpg|png)$/i, '')
-					const ext = isSupported ? '.webp' : '.jpg'
-					img.setAttribute('data-src', base + ext)
-				})
-			})
-		</script>
+			new Swiper('.mySwiper-catalog',{slidesPerView:1,spaceBetween:16,loop:!0,speed:200,grabCursor:!0,autoplay:{delay:3200,disableOnInteraction:!1,},navigation:{nextEl:'.swiper-button-next',prevEl:'.swiper-button-prev',},pagination:{el:'.swiper-pagination',clickable:!0,dynamicBullets:!0,},breakpoints:{480:{slidesPerView:1.1,},640:{slidesPerView:1.5,spaceBetween:20,},768:{slidesPerView:2,spaceBetween:24,},1024:{slidesPerView:3,spaceBetween:30,},},})
+			const toTopBtn=document.getElementById('toTopBtn')
+			window.addEventListener('scroll',()=>{if(window.scrollY>320){toTopBtn.classList.add('visible')}else{toTopBtn.classList.remove('visible')}})
+			toTopBtn.addEventListener('click',()=>{gsap.to(window,{duration:1,scrollTo:{y:0},ease:'power2.inOut',})})
+			if(window.ScrollReveal){ScrollReveal().reveal('.grid .improved-card',{distance:'30px',duration:900,easing:'cubic-bezier(.22,1,.36,1)',origin:'bottom',interval:120,reset:!1,})}
+			function updateActiveNav(){const navItems=document.querySelectorAll('.nav-item, .nav-item-mobile')
+			const sectionIds=['#cat9','#cat12','#catx12','#cat16','#cat18','#cat20','#cat25mdf',]
+			const sections=sectionIds.map(id=>document.querySelector(id))
+			let activeIdx=0
+			let maxVisible=0
+			sections.forEach((section,idx)=>{if(!section)return
+			const rect=section.getBoundingClientRect()
+			const visible=Math.max(0,Math.min(window.innerHeight,rect.bottom)-Math.max(0,rect.top))
+			if(visible>maxVisible){maxVisible=visible
+			activeIdx=idx}})
+			navItems.forEach((item,idx)=>{if(idx%sectionIds.length===activeIdx){item.classList.add('active')}else{item.classList.remove('active')}})}
+			window.addEventListener('scroll',updateActiveNav)
+			window.addEventListener('resize',updateActiveNav)
+			document.addEventListener('DOMContentLoaded',updateActiveNav)
+			document.querySelectorAll('.nav-item, .nav-item-mobile').forEach(link=>{link.addEventListener('click',()=>{setTimeout(updateActiveNav,700)})})
+			function isMobile(){return window.innerWidth<=767}
+			let rellaxInstance=null
+			let mobileParallaxRAF=null
+			function setMobileParallax(enable){const bg=document.getElementById('parallax-bg-img')
+			if(!bg)return
+			if(enable){let lastScroll=-1
+			function onScroll(){const scrollY=window.scrollY
+			if(scrollY!==lastScroll){bg.style.transform=`translateY(${scrollY * 0.18}px)`
+			lastScroll=scrollY}
+			mobileParallaxRAF=requestAnimationFrame(onScroll)}
+			mobileParallaxRAF=requestAnimationFrame(onScroll)}else{bg.style.transform=''
+			if(mobileParallaxRAF)cancelAnimationFrame(mobileParallaxRAF)
+			mobileParallaxRAF=null}}
+			function initParallax(){const bg=document.getElementById('parallax-bg-img')
+			if(!bg)return
+			if(!isMobile()&&window.Rellax){setMobileParallax(!1)
+			if(!rellaxInstance)
+			rellaxInstance=new Rellax('.rellax',{center:!0})}else{if(rellaxInstance){rellaxInstance.destroy()
+			rellaxInstance=null}
+			setMobileParallax(!0)}}
+			window.addEventListener('resize',initParallax)
+			document.addEventListener('DOMContentLoaded',initParallax)
+			document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('img[data-src]').forEach(img=>{img.setAttribute('src',img.getAttribute('data-src'))})})
+			document.addEventListener('DOMContentLoaded',()=>{const lazyImages=document.querySelectorAll('img.lazy-load')
+			if('IntersectionObserver' in window){const observer=new IntersectionObserver((entries,obs)=>{entries.forEach(entry=>{if(entry.isIntersecting){const img=entry.target
+			img.src=img.dataset.src
+			img.removeAttribute('data-src')
+			img.classList.remove('lazy-load')
+			obs.unobserve(img)}})})
+			lazyImages.forEach(img=>observer.observe(img))}else{lazyImages.forEach(img=>{img.src=img.dataset.src
+			img.removeAttribute('data-src')})}})
+			function supportsWebp(callback){const img=new Image()
+			img.onload=()=>callback(img.width>0&&img.height>0)
+			img.onerror=()=>callback(!1)
+			img.src='data:image/webp;base64,UklGRiIAAABXRUJQVlA4TAYAAAAvAAAAAAfQ//73v/+BiOh/AAA='}
+			supportsWebp(isSupported=>{document.querySelectorAll('img.lazy-load').forEach(img=>{const base=img.dataset.src.replace(/\.(jpg|png)$/i,'')
+			const ext=isSupported?'.webp':'.jpg'
+			img.setAttribute('data-src',base+ext)})})</script>
 	</body>
 </html>
